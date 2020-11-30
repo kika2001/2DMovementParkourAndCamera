@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour
 {
-    private Movement currentMovement;
+    [SerializeField] private Movement currentMovement;
     private InputMaster controls;
     private Vector2 _moveAxis;
     void OnEnable()
@@ -23,7 +23,7 @@ public class PlayerInput : MonoBehaviour
     private void Awake()
     {
         controls = new InputMaster();
-        currentMovement = GetComponent<Movement>();
+        //currentMovement = GetComponent<Movement>();
     }
 
     private void Update()

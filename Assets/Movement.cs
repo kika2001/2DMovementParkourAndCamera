@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody), typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public class Movement : MonoBehaviour
 {
     private Rigidbody2D rb2d;
@@ -83,8 +83,7 @@ public class Movement : MonoBehaviour
                 0,
                 Vector2.down, 0, walkable);
          */
-        if (transform.localScale.x > 0)
-        {
+        
             //GroundChecker
             /*
              * Gizmos.DrawWireCube(
@@ -97,116 +96,61 @@ public class Movement : MonoBehaviour
             );
 
              */
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(new Vector2(transform.position.x,
-                    transform.position.y - (sensorYDistance / 2) -
-                    (transform.GetComponent<SpriteRenderer>().size.y / 2 * transform.localScale.y) - sensorYOffset),
-                new Vector2(
-                    (transform.GetComponent<SpriteRenderer>().size.x * transform.localScale.x) -
-                    sensorXThicknessReducer, sensorYDistance));
-            //FowardChecker
-            Gizmos.color = Color.blue;
-            Gizmos.DrawRay(
-                new Vector2(
-                    transform.position.x +
-                    (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x + sensorXOffset,
-                    transform.position.y),
-                transform.right * sensorXDistance);
-            //BackCheker
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(
-                new Vector2(
-                    transform.position.x -
-                    (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x - sensorXOffset,
-                    transform.position.y),
-                -transform.right * sensorXDistance);
-        }
-        else if (transform.localScale.x < 0)
-        {
             //GroundChecker
             Gizmos.color = Color.red;
             Gizmos.DrawWireCube(new Vector2(transform.position.x,
                     transform.position.y - (sensorYDistance / 2) -
-                    (transform.GetComponent<SpriteRenderer>().size.y / 2 * transform.localScale.y) - sensorYOffset),
+                    (transform.GetComponent<BoxCollider2D>().size.y / 2 * transform.localScale.y) - sensorYOffset),
                 new Vector2(
-                    (transform.GetComponent<SpriteRenderer>().size.x * transform.localScale.x) +
-                    sensorXThicknessReducer, sensorYDistance));
-
+                    (transform.GetComponent<BoxCollider2D>().size.x * Mathf.Abs(transform.localScale.x)) - sensorXThicknessReducer,//+((transform.localScale.x > 0) ? -sensorXThicknessReducer : +sensorXThicknessReducer),
+                    sensorYDistance));
             //FowardChecker
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(
                 new Vector2(
                     transform.position.x +
-                    (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x - sensorXOffset,
+                    (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +((transform.localScale.x > 0) ? +sensorXOffset : -sensorXOffset),
                     transform.position.y),
-                -transform.right * sensorXDistance);
+                ((transform.localScale.x > 0) ? transform.right : -transform.right)  * sensorXDistance);
             //BackCheker
             Gizmos.color = Color.green;
             Gizmos.DrawRay(
                 new Vector2(
                     transform.position.x -
-                    (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x + sensorXOffset,
+                    (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +((transform.localScale.x > 0) ? -sensorXOffset : +sensorXOffset),
                     transform.position.y),
-                transform.right * sensorXDistance);
-        }
+                ((transform.localScale.x > 0) ? -transform.right : transform.right) * sensorXDistance);
+        
+        
 
         #endregion
 
         #region GizmosCheckersEdge
 
-        if (transform.localScale.x > 0)
-        {
-            //DownwardsPosition ray
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireCube(
-                new Vector3(
-                    transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
-                    downwardsEdgeXOffset,
-                    transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
-                    downwardsEdgeYOffset,
-                    0),
-                new Vector3(.2f, .2f, .2f)
-            );
-            //DownwardsRayDown
-            Gizmos.DrawLine(new Vector3(
+        
+        //DownwardsPosition ray
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireCube(
+            new Vector3(
                 transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
-                downwardsEdgeXOffset,
+                ((transform.localScale.x > 0) ? +downwardsEdgeXOffset : -downwardsEdgeXOffset),
                 transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
                 downwardsEdgeYOffset,
-                0), new Vector3(
-                transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
-                downwardsEdgeXOffset,
-                transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
-                downwardsEdgeYOffset,
-                0) + Vector3.down * downwardsEdgeDistance);
-        }
-        else if (transform.localScale.x < 0)
-        {
-            //DownwardsPosition ray
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireCube(
-                new Vector3(
-                    transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x -
-                    downwardsEdgeXOffset,
-                    transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
-                    downwardsEdgeYOffset,
-                    0),
-                new Vector3(.2f, .2f, .2f)
-            );
-            //DownwardsRayDown
-            Gizmos.DrawLine(new Vector3(
-                transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x -
-                downwardsEdgeXOffset,
-                transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
-                downwardsEdgeYOffset,
-                0), new Vector3(
-                transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x -
-                downwardsEdgeXOffset,
-                transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
-                downwardsEdgeYOffset,
-                0) + Vector3.down * downwardsEdgeDistance);
-        }
-
+                0),
+            new Vector3(.2f, .2f, .2f)
+        );
+        //DownwardsRayDown
+        Gizmos.DrawLine(new Vector3(
+            transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +((transform.localScale.x > 0) ? +downwardsEdgeXOffset : -downwardsEdgeXOffset),
+            transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
+            downwardsEdgeYOffset,
+            0), new Vector3(
+            transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +((transform.localScale.x > 0) ? +downwardsEdgeXOffset : -downwardsEdgeXOffset),
+            transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
+            downwardsEdgeYOffset,
+            0) + Vector3.down * downwardsEdgeDistance);
+    
+        
         //Edge
         if (edgeClose)
         {
@@ -260,6 +204,31 @@ public class Movement : MonoBehaviour
 
         #region CheckersRegionFloorWall
 
+        groundCheck = Physics2D.BoxCast(
+            new Vector2(transform.position.x,
+                transform.position.y - (sensorYDistance / 2) -
+                (transform.GetComponent<BoxCollider2D>().size.y / 2 * transform.localScale.y) - sensorYOffset),
+            new Vector2(
+                (transform.GetComponent<BoxCollider2D>().size.x * Mathf.Abs(transform.localScale.x)) - sensorXThicknessReducer,//+((transform.localScale.x > 0) ? -sensorXThicknessReducer : +sensorXThicknessReducer),
+                sensorYDistance),
+            0,
+            Vector2.down, 0, walkable);
+        
+        fowardCheck = Physics2D.Raycast(
+            new Vector2(
+                transform.position.x +
+                (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +((transform.localScale.x > 0) ? +sensorXOffset : -sensorXOffset),
+                transform.position.y),
+            ((transform.localScale.x > 0) ? Vector3.right : Vector3.left), sensorXDistance, walkable);
+        
+        backCheck = Physics2D.Raycast(
+            new Vector2(
+                transform.position.x -
+                (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +((transform.localScale.x > 0) ? -sensorXOffset : +sensorXOffset),
+                transform.position.y),
+            ((transform.localScale.x > 0) ? Vector3.left : Vector3.right), sensorXDistance, walkable);
+        
+        /*
         if (transform.localScale.x > 0)
         {
             groundCheck = Physics2D.BoxCast(
@@ -321,7 +290,7 @@ public class Movement : MonoBehaviour
                     transform.position.y),
                 Vector3.right, sensorXDistance, walkable);
         }
-
+        */
         #endregion
 
 
