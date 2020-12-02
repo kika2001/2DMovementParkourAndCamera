@@ -42,7 +42,11 @@ public class Movement : MonoBehaviour
 
     private bool edgeClose;
     private Vector3 edgepos;
-
+    private bool isHanging;
+    private float hangingStartTime;
+    private bool canClimb;
+    [SerializeField] private float climbingCooldown;
+    [SerializeField] private float hangingMaxTime;
     private WalkingState playerState;
     private WallState playerWallState;
 
@@ -65,6 +69,8 @@ public class Movement : MonoBehaviour
         startScale = transform.localScale;
         rb2d = GetComponent<Rigidbody2D>();
         collider2d = GetComponent<BoxCollider2D>();
+        isHanging = false;
+        canClimb = false;
     }
 
 
@@ -83,51 +89,51 @@ public class Movement : MonoBehaviour
                 0,
                 Vector2.down, 0, walkable);
          */
-        
-            //GroundChecker
-            /*
-             * Gizmos.DrawWireCube(
-                new Vector3(transform.position.x,
-                    transform.position.y - (sensorYDistance / 2) -
-                    (transform.GetComponent<BoxCollider2D>().size.y / 2 * transform.localScale.y) - sensorYOffset, 0),
-                new Vector2(
-                    (transform.GetComponent<BoxCollider2D>().size.x * transform.localScale.x) - sensorXThicknessReducer,
-                    sensorYDistance)
-            );
 
-             */
-            //GroundChecker
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(new Vector2(transform.position.x,
-                    transform.position.y - (sensorYDistance / 2) -
-                    (transform.GetComponent<BoxCollider2D>().size.y / 2 * transform.localScale.y) - sensorYOffset),
-                new Vector2(
-                    (transform.GetComponent<BoxCollider2D>().size.x * Mathf.Abs(transform.localScale.x)) - sensorXThicknessReducer,//+((transform.localScale.x > 0) ? -sensorXThicknessReducer : +sensorXThicknessReducer),
-                    sensorYDistance));
-            //FowardChecker
-            Gizmos.color = Color.blue;
-            Gizmos.DrawRay(
-                new Vector2(
-                    transform.position.x +
-                    (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +((transform.localScale.x > 0) ? +sensorXOffset : -sensorXOffset),
-                    transform.position.y),
-                ((transform.localScale.x > 0) ? transform.right : -transform.right)  * sensorXDistance);
-            //BackCheker
-            Gizmos.color = Color.green;
-            Gizmos.DrawRay(
-                new Vector2(
-                    transform.position.x -
-                    (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +((transform.localScale.x > 0) ? -sensorXOffset : +sensorXOffset),
-                    transform.position.y),
-                ((transform.localScale.x > 0) ? -transform.right : transform.right) * sensorXDistance);
-        
-        
+        //GroundChecker
+        /*
+         * Gizmos.DrawWireCube(
+            new Vector3(transform.position.x,
+                transform.position.y - (sensorYDistance / 2) -
+                (transform.GetComponent<BoxCollider2D>().size.y / 2 * transform.localScale.y) - sensorYOffset, 0),
+            new Vector2(
+                (transform.GetComponent<BoxCollider2D>().size.x * transform.localScale.x) - sensorXThicknessReducer,
+                sensorYDistance)
+        );
+
+         */
+        //GroundChecker
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(new Vector2(transform.position.x,
+                transform.position.y - (sensorYDistance / 2) -
+                (transform.GetComponent<BoxCollider2D>().size.y / 2 * transform.localScale.y) - sensorYOffset),
+            new Vector2(
+                (transform.GetComponent<BoxCollider2D>().size.x * Mathf.Abs(transform.localScale.x)) -
+                sensorXThicknessReducer, //+((transform.localScale.x > 0) ? -sensorXThicknessReducer : +sensorXThicknessReducer),
+                sensorYDistance));
+        //FowardChecker
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(
+            new Vector2(
+                transform.position.x +
+                (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +
+                ((transform.localScale.x > 0) ? +sensorXOffset : -sensorXOffset),
+                transform.position.y),
+            ((transform.localScale.x > 0) ? transform.right : -transform.right) * sensorXDistance);
+        //BackCheker
+        Gizmos.color = Color.green;
+        Gizmos.DrawRay(
+            new Vector2(
+                transform.position.x -
+                (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +
+                ((transform.localScale.x > 0) ? -sensorXOffset : +sensorXOffset),
+                transform.position.y),
+            ((transform.localScale.x > 0) ? -transform.right : transform.right) * sensorXDistance);
 
         #endregion
 
         #region GizmosCheckersEdge
 
-        
         //DownwardsPosition ray
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireCube(
@@ -141,16 +147,18 @@ public class Movement : MonoBehaviour
         );
         //DownwardsRayDown
         Gizmos.DrawLine(new Vector3(
-            transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +((transform.localScale.x > 0) ? +downwardsEdgeXOffset : -downwardsEdgeXOffset),
+            transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
+            ((transform.localScale.x > 0) ? +downwardsEdgeXOffset : -downwardsEdgeXOffset),
             transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
             downwardsEdgeYOffset,
             0), new Vector3(
-            transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +((transform.localScale.x > 0) ? +downwardsEdgeXOffset : -downwardsEdgeXOffset),
+            transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
+            ((transform.localScale.x > 0) ? +downwardsEdgeXOffset : -downwardsEdgeXOffset),
             transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
             downwardsEdgeYOffset,
             0) + Vector3.down * downwardsEdgeDistance);
-    
-        
+
+
         //Edge
         if (edgeClose)
         {
@@ -171,6 +179,10 @@ public class Movement : MonoBehaviour
         #endregion
     }
 
+    private void LateUpdate()
+    {
+        CheckHanging();
+    }
 
     private void FixedUpdate()
     {
@@ -209,25 +221,28 @@ public class Movement : MonoBehaviour
                 transform.position.y - (sensorYDistance / 2) -
                 (transform.GetComponent<BoxCollider2D>().size.y / 2 * transform.localScale.y) - sensorYOffset),
             new Vector2(
-                (transform.GetComponent<BoxCollider2D>().size.x * Mathf.Abs(transform.localScale.x)) - sensorXThicknessReducer,//+((transform.localScale.x > 0) ? -sensorXThicknessReducer : +sensorXThicknessReducer),
+                (transform.GetComponent<BoxCollider2D>().size.x * Mathf.Abs(transform.localScale.x)) -
+                sensorXThicknessReducer, //+((transform.localScale.x > 0) ? -sensorXThicknessReducer : +sensorXThicknessReducer),
                 sensorYDistance),
             0,
             Vector2.down, 0, walkable);
-        
+
         fowardCheck = Physics2D.Raycast(
             new Vector2(
                 transform.position.x +
-                (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +((transform.localScale.x > 0) ? +sensorXOffset : -sensorXOffset),
+                (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +
+                ((transform.localScale.x > 0) ? +sensorXOffset : -sensorXOffset),
                 transform.position.y),
             ((transform.localScale.x > 0) ? Vector3.right : Vector3.left), sensorXDistance, walkable);
-        
+
         backCheck = Physics2D.Raycast(
             new Vector2(
                 transform.position.x -
-                (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +((transform.localScale.x > 0) ? -sensorXOffset : +sensorXOffset),
+                (transform.GetComponent<BoxCollider2D>().size.x / 2) * transform.localScale.x +
+                ((transform.localScale.x > 0) ? -sensorXOffset : +sensorXOffset),
                 transform.position.y),
             ((transform.localScale.x > 0) ? Vector3.left : Vector3.right), sensorXDistance, walkable);
-        
+
         /*
         if (transform.localScale.x > 0)
         {
@@ -291,11 +306,12 @@ public class Movement : MonoBehaviour
                 Vector3.right, sensorXDistance, walkable);
         }
         */
+
         #endregion
 
 
-        Debug.Log($"size.x{transform.GetComponent<SpriteRenderer>().size.x * transform.localScale.x}");
-        Debug.Log(groundCheck.collider);
+       // Debug.Log($"size.x{transform.GetComponent<SpriteRenderer>().size.x * transform.localScale.x}");
+       // Debug.Log(groundCheck.collider);
 
         #region Walking States and Jump
 
@@ -348,36 +364,40 @@ public class Movement : MonoBehaviour
 
     public void Move(float horizontal)
     {
-        //Add air control
-        //Add slip movement and not instant
-        if (horizontal < 0)
+        if (!isHanging)
         {
-            transform.localScale = new Vector3(-startScale.x, startScale.y, startScale.z);
-        }
-        else if (horizontal > 0)
-        {
-            transform.localScale = startScale;
-        }
-
-        //rb2d.AddForce(new Vector2(horizontal*speed,0),ForceMode2D.Force);
-        if (playerState == WalkingState.Grounded)
-        {
-            if (Mathf.Abs(maxVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * stepSpeed))
+            //Add air control
+            //Add slip movement and not instant
+            if (horizontal < 0)
             {
-                rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * stepSpeed, rb2d.velocity.y);
+                transform.localScale = new Vector3(-startScale.x, startScale.y, startScale.z);
             }
-        }
-        else if (playerState == WalkingState.Air)
-        {
-            if (Mathf.Abs(maxVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * ((stepSpeed / 2))))
+            else if (horizontal > 0)
             {
-                rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * (stepSpeed / 2), rb2d.velocity.y);
+                transform.localScale = startScale;
+            }
+
+            //rb2d.AddForce(new Vector2(horizontal*speed,0),ForceMode2D.Force);
+            if (playerState == WalkingState.Grounded)
+            {
+                if (Mathf.Abs(maxVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * stepSpeed))
+                {
+                    rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * stepSpeed, rb2d.velocity.y);
+                }
+            }
+            else if (playerState == WalkingState.Air)
+            {
+                if (Mathf.Abs(maxVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * ((stepSpeed / 2))))
+                {
+                    rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * (stepSpeed / 2), rb2d.velocity.y);
+                }
             }
         }
     }
 
+    
 
-    public void Jump()
+    public void Jump(Vector2 input)
     {
         /*
         if (playerState== WalkingState.Grounded || (playerState == WalkingState.Air && (fowardCheck|| backCheck)) )
@@ -395,13 +415,84 @@ public class Movement : MonoBehaviour
         }
         else if (playerState == WalkingState.Air)
         {
-            if (fowardCheck)
+            if (CompareInputWithVector(input,Vector2.up,0.8f) && fowardCheck && edgeClose && !isHanging)
             {
+                Debug.Log("Grabbed Edge");
+                isHanging = true;
+                hangingStartTime = Time.time;
+                rb2d.velocity = Vector2.zero;
+                rb2d.isKinematic = true;
+                transform.position = new Vector3(
+                    edgepos.x + ((edgepos.x - transform.position.x > 0) ? -(transform.GetComponent<BoxCollider2D>().size.x / 4) : +(transform.GetComponent<BoxCollider2D>().size.x / 4)),
+                    edgepos.y - transform.GetComponent<BoxCollider2D>().size.y / 2,
+                    transform.position.z
+                );
+                /*
+                Debug.Log("Climbed Wall");
+                rb2d.velocity = Vector2.zero;
+                //rb2d.AddForce(transform.up * jumpForce * 1.4f, ForceMode2D.Impulse);
+                transform.position = new Vector3(
+                    edgepos.x + ((edgepos.x - transform.position.x > 0) ? +(transform.GetComponent<BoxCollider2D>().size.x / 2) : -(transform.GetComponent<BoxCollider2D>().size.x / 2)),
+                    edgepos.y + transform.GetComponent<BoxCollider2D>().size.y / 2,
+                    transform.position.z
+                    );
+                */
+            }else if (CompareInputWithVector(input,Vector2.up,0.8f) && isHanging && canClimb)
+            {
+                Debug.Log("Climbed Wall");
+                rb2d.velocity = Vector2.zero;
+                isHanging = false;
+                canClimb = false;
+                rb2d.isKinematic = false;
+                //rb2d.AddForce(transform.up * jumpForce * 1.4f, ForceMode2D.Impulse);
+                transform.position = new Vector3(
+                    edgepos.x + ((edgepos.x - transform.position.x > 0) ? +(transform.GetComponent<BoxCollider2D>().size.x / 2) : -(transform.GetComponent<BoxCollider2D>().size.x / 2)),
+                    edgepos.y + transform.GetComponent<BoxCollider2D>().size.y / 2,
+                    transform.position.z
+                );
+            }
+            else if (fowardCheck)
+            {
+                Debug.Log("Jumped Wall");
                 //rb2d.AddForce((-transform.right) * jumpForce * 1.4f, ForceMode2D.Impulse);
                 rb2d.AddForce(fowardCheck.normal * jumpForce * 1.4f, ForceMode2D.Impulse);
-                Debug.Log("Jumped Wall");
+                rb2d.AddForce(transform.up * jumpForce * 0.9f, ForceMode2D.Impulse);
+                
                 canJump = false;
             }
         }
+    }
+
+    private void CheckHanging()
+    {
+        if (isHanging)
+        {
+            if (climbingCooldown+hangingStartTime<Time.time)
+            {
+                canClimb = true;
+            }
+            if (hangingStartTime+hangingMaxTime<Time.time)
+            {
+                rb2d.velocity = Vector2.zero;
+                isHanging = false;
+                rb2d.isKinematic = false;
+                
+            }
+        }
+        else
+        {
+            canClimb = false;
+        }
+        
+    }
+    public bool CompareInputWithVector(Vector2 input,Vector2 vector,float offset)
+    {
+        input = input.normalized;
+        if ((input.x >=vector.x-offset && input.x <= vector.x+offset) && (input.y >= vector.y - offset && input.y <=vector.y + offset))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

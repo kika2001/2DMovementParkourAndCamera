@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.LowLevel;
 
 public class FollowCursor : MonoBehaviour
@@ -32,7 +33,7 @@ public class FollowCursor : MonoBehaviour
 
     private void OnEnable()
     {
-        Cursor.lockState = CursorLockMode.Confined;
+        //Cursor.lockState = CursorLockMode.Confined;
         controls.Player.RightAnalog.Enable();
         controls.Player.RightAnalog.performed += MoveCursorHandler;
     }
@@ -44,21 +45,24 @@ public class FollowCursor : MonoBehaviour
 
     private void MoveCursorHandler(InputAction.CallbackContext obj)
     {
+        
         _moveAxis = controls.Player.RightAnalog.ReadValue<Vector2>();
+        
         currentMousePos += _moveAxis * mouseSpeed;
         //Mouse.current.position.WriteValueIntoState(currentMousePos, Tstate);
         Mouse.current.WarpCursorPosition(currentMousePos);
         Mouse.current.MakeCurrent();
-        //MouseState s;
+       
+        //MouseState s = new MouseState();
         //s.position = currentMousePos;
-        //Mouse.current.position.WriteValueIntoState(currentMousePos,s.);
+        //Mouse.current.position.WriteValueIntoState(currentMousePos);
 
-        
+
     }
 
     void Start()
     {
-        Cursor.visible = false;
+        //Cursor.visible = false;
         sp.sprite = idleCursor;
         currentMousePos = new Vector2(Screen.width/2,Screen.height/2);
         

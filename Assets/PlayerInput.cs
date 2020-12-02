@@ -40,13 +40,31 @@ public class PlayerInput : MonoBehaviour
         
     }
 
+    private void OnDrawGizmos()
+    {
+        var input = _moveAxis;
+        var vector = Vector2.up;
+        var offset = 0.8f;
+        input = input.normalized;
+        if ((input.x >=vector.x-offset && input.x <= vector.x+offset) && (input.y >= vector.y - offset && input.y <=vector.y + offset))
+        {
+            Gizmos.color= Color.green;
+        }
+        else
+        {
+            Gizmos.color= Color.blue;
+        }
+        Gizmos.DrawRay(transform.position, _moveAxis*2f);
+    }
+
     void HandleInputs()
     {
         _moveAxis = controls.Player.Movement.ReadValue<Vector2>();
+        //Debug.LogError(_moveAxis);
     }
     void HandleJump(InputAction.CallbackContext ctx)
     {
-        Debug.Log("HandlerWorked");
-        currentMovement.Jump();
+        //Debug.Log("HandlerWorked");
+        currentMovement.Jump(_moveAxis);
     }
 }
