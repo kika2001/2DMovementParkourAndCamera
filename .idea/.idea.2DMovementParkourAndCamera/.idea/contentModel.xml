@@ -7,13 +7,17 @@
       <e p="2DMovementParkourAndCamera.sln" t="IncludeFlat" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
-        <e p="CameraFocusGroup.cs" t="Include" />
-        <e p="FollowCursor.cs" t="Include" />
-        <e p="GraphicRaycasterRaycasterExample.cs" t="Include" />
-        <e p="InputMaster.cs" t="Include" />
-        <e p="Movement.cs" t="Include" />
-        <e p="PlayerInput.cs" t="Include" />
-        <e p="TargetGroupManager.cs" t="Include" />
+        <e p="_Scripts" t="Include">
+          <e p="CameraFocusGroup.cs" t="Include" />
+          <e p="FollowCursor.cs" t="Include" />
+          <e p="GameManager.cs" t="Include" />
+          <e p="GraphicRaycasterRaycasterExample.cs" t="Include" />
+          <e p="InputMaster.cs" t="Include" />
+          <e p="Movement.cs" t="Include" />
+          <e p="PlayerInput.cs" t="Include" />
+          <e p="SceneIndexes.cs" t="Include" />
+          <e p="TargetGroupManager.cs" t="Include" />
+        </e>
       </e>
       <e p="obj" t="ExcludeRecursive" />
       <e p="Packages" t="ExcludeRecursive" />

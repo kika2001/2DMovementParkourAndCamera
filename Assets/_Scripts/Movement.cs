@@ -12,8 +12,10 @@ public class Movement : MonoBehaviour
     private Vector3 startScale;
     [SerializeField] private Vector2 maxVelocity2D;
     [SerializeField] private float stepSpeed;
+    [SerializeField] private float aircontrol;
     private bool canJump;
     [SerializeField] private float jumpForce;
+    [SerializeField] private float gravityNormal, gravityWall;
 
 
     [SerializeField] private LayerMask walkable;
@@ -23,30 +25,47 @@ public class Movement : MonoBehaviour
 
     [SerializeField] private float sensorYDistance;
     [SerializeField] private float sensorXThicknessReducer;
-
-    [Space] [Header("WallCheckers")] [SerializeField]
-    private float sensorXOffset;
-
+    private RaycastHit2D groundCheck;
+    
+    [Space] [Header("WallCheckers")] 
+    [SerializeField] private float sensorXOffset;
+    private RaycastHit2D fowardCheck;
+    private RaycastHit2D backCheck;
     [SerializeField] private float sensorXDistance;
 
-    [Header("Downwards Checker")] [SerializeField]
-    private float downwardsEdgeXOffset;
-
+    [Space]
+    [Header("Downwards Checker")] 
+    private RaycastHit2D downwardsEdgeCheck;
+    [SerializeField] private float downwardsEdgeXOffset;
     [SerializeField] private float downwardsEdgeYOffset;
     [SerializeField] private float downwardsEdgeDistance;
 
-    private RaycastHit2D downwardsEdgeCheck;
-    private RaycastHit2D groundCheck;
-    private RaycastHit2D fowardCheck;
-    private RaycastHit2D backCheck;
-
+    [Space]
+    [Header("Edge/Climbing Stuff")]
+    [SerializeField] private float climbingCooldown;
+    [SerializeField] private float hangingMaxTime;
     private bool edgeClose;
     private Vector3 edgepos;
     private bool isHanging;
     private float hangingStartTime;
     private bool canClimb;
-    [SerializeField] private float climbingCooldown;
-    [SerializeField] private float hangingMaxTime;
+    
+    [Space]
+    [Header("Vault Checker. Its still not working")] 
+    [SerializeField] private float vaultEdgeXOffset;
+    [SerializeField] private float vaultEdgeYOffset;
+    [SerializeField] private float vaultEdgeDistance;
+    private bool vaultableObjectClose;
+    private RaycastHit2D[] vaultCheck;
+
+    
+    
+    
+    
+   
+    
+    [Header("Other Stuff")] 
+    
     private WalkingState playerState;
     private WallState playerWallState;
 
@@ -159,14 +178,7 @@ public class Movement : MonoBehaviour
             0) + Vector3.down * downwardsEdgeDistance);
 
 
-        //Edge
-        if (edgeClose)
-        {
-            Gizmos.DrawWireCube(
-                edgepos,
-                new Vector3(.2f, .2f, .2f)
-            );
-        }
+       
 
         //Foward Edge Ray
         /*
@@ -177,6 +189,50 @@ public class Movement : MonoBehaviour
         */
 
         #endregion
+        //Edge
+        if (edgeClose)
+        {
+            Gizmos.DrawWireCube(
+                edgepos,
+                new Vector3(.2f, .2f, .2f)
+            );
+        }
+
+        #region GizmosCheckerVault
+
+        //VaultPosition ray
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(
+            new Vector3(
+                transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
+                ((transform.localScale.x > 0) ? +vaultEdgeXOffset : -vaultEdgeXOffset),
+                transform.position.y - (transform.GetComponent<BoxCollider2D>().size.y/4) * transform.localScale.y +
+                vaultEdgeYOffset,
+                0),
+            new Vector3(.2f, .2f, .2f)
+        );
+        //VaultRayFoward
+        Gizmos.DrawRay(new Vector3(
+            transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
+            ((transform.localScale.x > 0) ? +vaultEdgeXOffset : -vaultEdgeXOffset),
+            transform.position.y - (transform.GetComponent<BoxCollider2D>().size.y/4) * transform.localScale.y +
+            downwardsEdgeYOffset,
+            0), ((transform.localScale.x > 0) ? transform.right : -transform.right) * vaultEdgeDistance);
+
+        if (vaultCheck!=null)
+        {
+            foreach (var hit in vaultCheck)
+            {
+                Gizmos.DrawWireCube(hit.point,new Vector3(0.2f,0.2f,0.2f));
+            }
+        }
+       
+
+        #endregion
+        
+
+
+
     }
 
     private void LateUpdate()
@@ -193,6 +249,12 @@ public class Movement : MonoBehaviour
     {
         #region CheckEdge
 
+        downwardsEdgeCheck = Physics2D.Raycast(new Vector3(
+            transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x + ((transform.localScale.x > 0) ? +downwardsEdgeXOffset : -downwardsEdgeXOffset),
+            transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
+            downwardsEdgeYOffset,
+            0), Vector2.down, downwardsEdgeDistance,walkable);
+        /*
         if (transform.localScale.x > 0)
         {
             downwardsEdgeCheck = Physics2D.Raycast(new Vector3(
@@ -211,6 +273,7 @@ public class Movement : MonoBehaviour
                 downwardsEdgeYOffset,
                 0), Vector2.down, downwardsEdgeDistance);
         }
+        */
 
         #endregion
 
@@ -360,6 +423,50 @@ public class Movement : MonoBehaviour
         }
 
         #endregion
+        
+        //---------------------------------VaultChecker---------------------------------------------
+        //Still not done
+        #region CheckerVault
+        vaultCheck = Physics2D.RaycastAll(
+            new Vector3(
+                transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
+                ((transform.localScale.x > 0) ? +vaultEdgeXOffset : -vaultEdgeXOffset),
+                transform.position.y - (transform.GetComponent<BoxCollider2D>().size.y/4) * transform.localScale.y +
+                downwardsEdgeYOffset,
+                0),
+            ((transform.localScale.x > 0) ? Vector3.right : Vector3.left), vaultEdgeDistance, walkable);
+
+        if (vaultCheck.Length>0)
+        {
+            
+            if (downwardsEdgeCheck && vaultCheck[0] && downwardsEdgeCheck.distance > 0.05f)
+            {
+                vaultableObjectClose = true;
+            
+                // edgepos = new Vector2(fowardCheck.point.x, downwardsEdgeCheck.point.y);
+            }
+
+            if (!downwardsEdgeCheck || !vaultCheck[0] || downwardsEdgeCheck.distance < 0.05f)
+            {
+                vaultableObjectClose = false;
+            }
+        }
+        else
+        {
+            vaultableObjectClose = false;
+        }
+       
+
+        #endregion
+
+        if (playerState == WalkingState.Air && playerWallState != WallState.None)
+        {
+            rb2d.gravityScale = gravityWall;
+        }
+        else
+        {
+            rb2d.gravityScale = gravityNormal;
+        }
     }
 
     public void Move(float horizontal)
@@ -387,9 +494,9 @@ public class Movement : MonoBehaviour
             }
             else if (playerState == WalkingState.Air)
             {
-                if (Mathf.Abs(maxVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * ((stepSpeed / 2))))
+                if (Mathf.Abs(maxVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * ((stepSpeed * aircontrol))))
                 {
-                    rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * (stepSpeed / 2), rb2d.velocity.y);
+                    rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * (stepSpeed * aircontrol), rb2d.velocity.y);
                 }
             }
         }
