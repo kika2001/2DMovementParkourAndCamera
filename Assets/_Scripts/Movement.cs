@@ -10,8 +10,13 @@ public class Movement : MonoBehaviour
     private BoxCollider2D collider2d;
 
     private Vector3 startScale;
-    [SerializeField] private Vector2 maxVelocity2D;
-    [SerializeField] private float stepSpeed;
+    [Header("Walking Variables")]
+    [SerializeField] private Vector2 maxWalkingVelocity2D;
+    [SerializeField] private float stepWalkingSpeed;
+    [Header("Running Variables")]
+    [SerializeField] private Vector2 maxRunningVelocity2D;
+    [SerializeField] private float stepRunningSpeed;
+    [Header("Air Variables")]
     [SerializeField] private float aircontrol;
     private bool canJump;
     [SerializeField] private float jumpForce;
@@ -56,7 +61,8 @@ public class Movement : MonoBehaviour
     [SerializeField] private float vaultEdgeYOffset;
     [SerializeField] private float vaultEdgeDistance;
     private bool vaultableObjectClose;
-    private RaycastHit2D[] vaultCheck;
+    private Vector2 vaultpos;
+    private RaycastHit2D vaultCheck;
 
     
     
@@ -216,16 +222,12 @@ public class Movement : MonoBehaviour
             transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
             ((transform.localScale.x > 0) ? +vaultEdgeXOffset : -vaultEdgeXOffset),
             transform.position.y - (transform.GetComponent<BoxCollider2D>().size.y/4) * transform.localScale.y +
-            downwardsEdgeYOffset,
+            vaultEdgeYOffset,
             0), ((transform.localScale.x > 0) ? transform.right : -transform.right) * vaultEdgeDistance);
 
-        if (vaultCheck!=null)
-        {
-            foreach (var hit in vaultCheck)
-            {
-                Gizmos.DrawWireCube(hit.point,new Vector3(0.2f,0.2f,0.2f));
-            }
-        }
+       
+        Gizmos.DrawWireCube(vaultCheck.point,new Vector3(0.2f,0.2f,0.2f));
+           
        
 
         #endregion
@@ -254,27 +256,7 @@ public class Movement : MonoBehaviour
             transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
             downwardsEdgeYOffset,
             0), Vector2.down, downwardsEdgeDistance,walkable);
-        /*
-        if (transform.localScale.x > 0)
-        {
-            downwardsEdgeCheck = Physics2D.Raycast(new Vector3(
-                transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
-                downwardsEdgeXOffset,
-                transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
-                downwardsEdgeYOffset,
-                0), Vector2.down, downwardsEdgeDistance);
-        }
-        else if (transform.localScale.x < 0)
-        {
-            downwardsEdgeCheck = Physics2D.Raycast(new Vector3(
-                transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x -
-                downwardsEdgeXOffset,
-                transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
-                downwardsEdgeYOffset,
-                0), Vector2.down, downwardsEdgeDistance);
-        }
-        */
-
+       
         #endregion
 
         #region CheckersRegionFloorWall
@@ -305,76 +287,8 @@ public class Movement : MonoBehaviour
                 ((transform.localScale.x > 0) ? -sensorXOffset : +sensorXOffset),
                 transform.position.y),
             ((transform.localScale.x > 0) ? Vector3.left : Vector3.right), sensorXDistance, walkable);
-
-        /*
-        if (transform.localScale.x > 0)
-        {
-            groundCheck = Physics2D.BoxCast(
-                new Vector2(transform.position.x,
-                    transform.position.y - (sensorYDistance / 2) -
-                    (transform.GetComponent<SpriteRenderer>().size.y / 2 * transform.localScale.y) - sensorYOffset),
-                new Vector2(
-                    (transform.GetComponent<SpriteRenderer>().size.x * transform.localScale.x) -
-                    sensorXThicknessReducer, sensorYDistance),
-                0,
-                Vector2.down, 0, walkable);
-
-            if (groundCheck.collider != null)
-            {
-                Debug.Log($"Floor name: {groundCheck.collider.name}");
-            }
-
-            fowardCheck = Physics2D.Raycast(
-                new Vector2(
-                    transform.position.x +
-                    (transform.GetComponent<SpriteRenderer>().size.x / 2) * transform.localScale.x + sensorXOffset,
-                    transform.position.y),
-                Vector3.right, sensorXDistance, walkable);
-            backCheck = Physics2D.Raycast(
-                new Vector2(
-                    transform.position.x -
-                    (transform.GetComponent<SpriteRenderer>().size.x / 2) * transform.localScale.x - sensorXOffset,
-                    transform.position.y),
-                Vector3.left, sensorXDistance, walkable);
-        }
-        else if (transform.localScale.x < 0)
-        {
-            groundCheck = Physics2D.BoxCast(
-                new Vector2(transform.position.x,
-                    transform.position.y - (sensorYDistance / 2) -
-                    (transform.GetComponent<SpriteRenderer>().size.y / 2 * transform.localScale.y) - sensorYOffset),
-                new Vector2(
-                    (transform.GetComponent<SpriteRenderer>().size.x * transform.localScale.x) -
-                    sensorXThicknessReducer, sensorYDistance),
-                0,
-                Vector2.down, 1, walkable);
-
-
-            if (groundCheck.collider != null)
-            {
-                Debug.Log($"Floor name: {groundCheck.collider.name}");
-            }
-
-            fowardCheck = Physics2D.Raycast(
-                new Vector2(
-                    transform.position.x +
-                    (transform.GetComponent<SpriteRenderer>().size.x / 2) * transform.localScale.x - sensorXOffset,
-                    transform.position.y),
-                Vector3.left, sensorXDistance, walkable);
-            backCheck = Physics2D.Raycast(
-                new Vector2(
-                    transform.position.x -
-                    (transform.GetComponent<SpriteRenderer>().size.x / 2) * transform.localScale.x + sensorXOffset,
-                    transform.position.y),
-                Vector3.right, sensorXDistance, walkable);
-        }
-        */
-
+      
         #endregion
-
-
-       // Debug.Log($"size.x{transform.GetComponent<SpriteRenderer>().size.x * transform.localScale.x}");
-       // Debug.Log(groundCheck.collider);
 
         #region Walking States and Jump
 
@@ -427,31 +341,33 @@ public class Movement : MonoBehaviour
         //---------------------------------VaultChecker---------------------------------------------
         //Still not done
         #region CheckerVault
-        vaultCheck = Physics2D.RaycastAll(
+        vaultCheck = Physics2D.Raycast(
             new Vector3(
                 transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x +
                 ((transform.localScale.x > 0) ? +vaultEdgeXOffset : -vaultEdgeXOffset),
                 transform.position.y - (transform.GetComponent<BoxCollider2D>().size.y/4) * transform.localScale.y +
-                downwardsEdgeYOffset,
+                vaultEdgeYOffset,
                 0),
             ((transform.localScale.x > 0) ? Vector3.right : Vector3.left), vaultEdgeDistance, walkable);
 
-        if (vaultCheck.Length>0)
+        /*
+         * downwardsEdgeCheck = Physics2D.Raycast(new Vector3(
+            transform.position.x + (transform.GetComponent<BoxCollider2D>().size.x) * transform.localScale.x + ((transform.localScale.x > 0) ? +downwardsEdgeXOffset : -downwardsEdgeXOffset),
+            transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y +
+            downwardsEdgeYOffset,
+            0), Vector2.down, downwardsEdgeDistance,walkable);
+         */
+        
+        //I did the position.y - position.y just to understand when reading
+        Debug.Log($"Downwards Distance: {downwardsEdgeCheck.distance}| Depois de: {(transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y + downwardsEdgeYOffset)- transform.position.y}");
+        if (downwardsEdgeCheck && vaultCheck && downwardsEdgeCheck.distance >  (transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y + downwardsEdgeYOffset)- transform.position.y)
         {
-            
-            if (downwardsEdgeCheck && vaultCheck[0] && downwardsEdgeCheck.distance > 0.05f)
-            {
-                vaultableObjectClose = true;
-            
-                // edgepos = new Vector2(fowardCheck.point.x, downwardsEdgeCheck.point.y);
-            }
-
-            if (!downwardsEdgeCheck || !vaultCheck[0] || downwardsEdgeCheck.distance < 0.05f)
-            {
-                vaultableObjectClose = false;
-            }
+            vaultableObjectClose = true;
+            vaultpos = new Vector2(vaultCheck.point.x, downwardsEdgeCheck.point.y);
+            // edgepos = new Vector2(fowardCheck.point.x, downwardsEdgeCheck.point.y);
         }
-        else
+
+        if (!downwardsEdgeCheck || !vaultCheck || downwardsEdgeCheck.distance <=  (transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y + downwardsEdgeYOffset)- transform.position.y)
         {
             vaultableObjectClose = false;
         }
@@ -469,7 +385,7 @@ public class Movement : MonoBehaviour
         }
     }
 
-    public void Move(float horizontal)
+    public void Move(float horizontal, bool running =false)
     {
         if (!isHanging)
         {
@@ -487,16 +403,25 @@ public class Movement : MonoBehaviour
             //rb2d.AddForce(new Vector2(horizontal*speed,0),ForceMode2D.Force);
             if (playerState == WalkingState.Grounded)
             {
-                if (Mathf.Abs(maxVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * stepSpeed))
+                if (Mathf.Abs( (running) ? maxRunningVelocity2D.x : maxWalkingVelocity2D.x ) >= Mathf.Abs(rb2d.velocity.x + horizontal * ((running) ? stepRunningSpeed :  stepWalkingSpeed)))
                 {
-                    rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * stepSpeed, rb2d.velocity.y);
+                    rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * ((running) ? stepRunningSpeed :  stepWalkingSpeed), rb2d.velocity.y);
+                }
+
+                if (vaultableObjectClose && running && CompareNormalWithVector(vaultCheck.normal,((horizontal>0) ? Vector2.left : Vector2.right),0.3f) )
+                {
+                    transform.position = new Vector3(
+                        vaultpos.x + ((vaultpos.x - transform.position.x > 0) ? -(transform.GetComponent<BoxCollider2D>().size.x / 4) : +(transform.GetComponent<BoxCollider2D>().size.x / 4)),
+                        vaultpos.y + transform.GetComponent<BoxCollider2D>().size.y / 1.8f,
+                        transform.position.z
+                    );
                 }
             }
             else if (playerState == WalkingState.Air)
             {
-                if (Mathf.Abs(maxVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * ((stepSpeed * aircontrol))))
+                if (Mathf.Abs(maxWalkingVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * ((stepWalkingSpeed * aircontrol))))
                 {
-                    rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * (stepSpeed * aircontrol), rb2d.velocity.y);
+                    rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * (stepWalkingSpeed * aircontrol), rb2d.velocity.y);
                 }
             }
         }
@@ -596,6 +521,16 @@ public class Movement : MonoBehaviour
     {
         input = input.normalized;
         if ((input.x >=vector.x-offset && input.x <= vector.x+offset) && (input.y >= vector.y - offset && input.y <=vector.y + offset))
+        {
+            return true;
+        }
+
+        return false;
+    }
+    public bool CompareNormalWithVector(Vector2 normal,Vector2 vector,float offset)
+    {
+        normal = normal.normalized;
+        if ((normal.x >=vector.x-offset && normal.x <= vector.x+offset) && (normal.y >= vector.y - offset && normal.y <=vector.y + offset))
         {
             return true;
         }

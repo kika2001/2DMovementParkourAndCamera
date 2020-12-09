@@ -19,7 +19,17 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a971594-7669-4ac1-a8f0-3c214b835a75" name="Default Changelist" comment="" />
+    <list default="true" id="9a971594-7669-4ac1-a8f0-3c214b835a75" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/indexLayout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/InputMaster.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/InputMaster.inputactions" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/InputMaster.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/InputMaster.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/Movement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/PlayerInput.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/PlayerInput.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -47,7 +57,12 @@
         <option value="$PROJECT_DIR$/Assets/Movement.cs" />
         <option value="$PROJECT_DIR$/Assets/_Scripts/GameManager.cs" />
         <option value="$PROJECT_DIR$/Assets/_Scripts/SceneIndexes.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Scripts/PlayerInput.cs" />
         <option value="$PROJECT_DIR$/Assets/_Scripts/Movement.cs" />
+        <option value="$PROJECT_DIR$/Assets/Test.cs" />
+        <option value="$PROJECT_DIR$/Assets/WallRun.cs" />
+        <option value="$PROJECT_DIR$/Assets/MovementExtras.cs" />
+        <option value="$PROJECT_DIR$/Assets/MovementTest.cs" />
       </list>
     </option>
   </component>
@@ -84,10 +99,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="10692">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="10692" />
+      <option name="pid" />
       <option name="selectedOptions">
         <set />
       </option>
@@ -122,6 +137,8 @@
       <workItem from="1607097292868" duration="776000" />
       <workItem from="1607110428359" duration="2771000" />
       <workItem from="1607178997855" duration="971000" />
+      <workItem from="1607375351767" duration="4816000" />
+      <workItem from="1607437197323" duration="5224000" />
     </task>
     <servers />
   </component>
@@ -242,24 +259,5 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1606315756250" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Assets/_Scripts/Movement.cs</url>
-          <line>248</line>
-          <properties documentPath="H:\Projetos\Projetos\ProjetosUnity\2DMovementParkourAndCamera\Assets\_Scripts\Movement.cs" initialLine="248">
-            <startOffsets>
-              <option value="8692" />
-            </startOffsets>
-            <endOffsets>
-              <option value="8693" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
