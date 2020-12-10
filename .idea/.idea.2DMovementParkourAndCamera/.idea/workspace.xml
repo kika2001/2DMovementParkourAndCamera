@@ -20,15 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a971594-7669-4ac1-a8f0-3c214b835a75" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/indexLayout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/indexLayout.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.2DMovementParkourAndCamera/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/InputMaster.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/InputMaster.inputactions" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/InputMaster.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/InputMaster.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MovementTest.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MovementTest.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scripts/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/Movement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/_Scripts/PlayerInput.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scripts/PlayerInput.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,11 +53,11 @@
         <option value="$PROJECT_DIR$/Assets/_Scripts/GameManager.cs" />
         <option value="$PROJECT_DIR$/Assets/_Scripts/SceneIndexes.cs" />
         <option value="$PROJECT_DIR$/Assets/_Scripts/PlayerInput.cs" />
-        <option value="$PROJECT_DIR$/Assets/_Scripts/Movement.cs" />
         <option value="$PROJECT_DIR$/Assets/Test.cs" />
         <option value="$PROJECT_DIR$/Assets/WallRun.cs" />
         <option value="$PROJECT_DIR$/Assets/MovementExtras.cs" />
         <option value="$PROJECT_DIR$/Assets/MovementTest.cs" />
+        <option value="$PROJECT_DIR$/Assets/_Scripts/Movement.cs" />
       </list>
     </option>
   </component>
@@ -139,6 +134,7 @@
       <workItem from="1607178997855" duration="971000" />
       <workItem from="1607375351767" duration="4816000" />
       <workItem from="1607437197323" duration="5224000" />
+      <workItem from="1607544494536" duration="1024000" />
     </task>
     <servers />
   </component>

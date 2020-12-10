@@ -11,44 +11,68 @@ public class Movement : MonoBehaviour
 
     private Vector3 startScale;
     [Header("Walking Variables")]
-    [SerializeField] private Vector2 maxWalkingVelocity2D;
-    [SerializeField] private float stepWalkingSpeed;
+    [SerializeField] private Vector2 maxWalkingVelocity2D = new Vector2(4,0);
+    [SerializeField] private float stepWalkingSpeed = 0.2f;
     [Header("Running Variables")]
-    [SerializeField] private Vector2 maxRunningVelocity2D;
-    [SerializeField] private float stepRunningSpeed;
+    [SerializeField] private Vector2 maxRunningVelocity2D = new Vector2(7,0);
+    [SerializeField] private float stepRunningSpeed = 0.5f;
     [Header("Air Variables")]
-    [SerializeField] private float aircontrol;
+    [SerializeField] private float aircontrol = 0.7f;
     private bool canJump;
-    [SerializeField] private float jumpForce;
-    [SerializeField] private float gravityNormal, gravityWall;
+    [SerializeField] private float jumpForce = 5;
+    [SerializeField] private float gravityNormal = 1;
+        [SerializeField] private float gravityWall = 0.6f;
 
 
     [SerializeField] private LayerMask walkable;
 
     [Space] [Header("Ground Checkers")] [SerializeField]
-    private float sensorYOffset;
+    private float sensorYOffset = 0;
 
-    [SerializeField] private float sensorYDistance;
-    [SerializeField] private float sensorXThicknessReducer;
+    [SerializeField] private float sensorYDistance = 0.05f;
+    [SerializeField] private float sensorXThicknessReducer = 0.07f;
     private RaycastHit2D groundCheck;
+    public RaycastHit2D GroundCheck
+    {
+        get => groundCheck;
+    }
     
-    [Space] [Header("WallCheckers")] 
-    [SerializeField] private float sensorXOffset;
+    [Space]
+    [Header("WallCheckers")] 
+    [SerializeField] private float sensorXOffset = 0.02f;
     private RaycastHit2D fowardCheck;
+    public RaycastHit2D FowardCheck
+    {
+        get => fowardCheck;
+    }
     private RaycastHit2D backCheck;
-    [SerializeField] private float sensorXDistance;
+    public RaycastHit2D BackCheck => backCheck;
+    [SerializeField]
+    private float sensorXDistance = 0.08f;
 
+    public float WallCheckDistance
+    {
+        get { return sensorXDistance; }
+    }
+
+    
+    private RaycastHit2D downwardsEdgeCheck;
+    
+    public RaycastHit2D DownwardsEdgeCheck => downwardsEdgeCheck;
+    
+    
+
+    
     [Space]
     [Header("Downwards Checker")] 
-    private RaycastHit2D downwardsEdgeCheck;
-    [SerializeField] private float downwardsEdgeXOffset;
-    [SerializeField] private float downwardsEdgeYOffset;
-    [SerializeField] private float downwardsEdgeDistance;
+    [SerializeField] private float downwardsEdgeXOffset=0;
+    [SerializeField] private float downwardsEdgeYOffset=0;
+    [SerializeField] private float downwardsEdgeDistance= 1.49f;
 
     [Space]
     [Header("Edge/Climbing Stuff")]
-    [SerializeField] private float climbingCooldown;
-    [SerializeField] private float hangingMaxTime;
+    [SerializeField] private float climbingCooldown=0.5f;
+    [SerializeField] private float hangingMaxTime=1.5f;
     private bool edgeClose;
     private Vector3 edgepos;
     private bool isHanging;
@@ -57,21 +81,17 @@ public class Movement : MonoBehaviour
     
     [Space]
     [Header("Vault Checker. Its still not working")] 
-    [SerializeField] private float vaultEdgeXOffset;
-    [SerializeField] private float vaultEdgeYOffset;
-    [SerializeField] private float vaultEdgeDistance;
+    [SerializeField] private float vaultEdgeXOffset = -0.23f;
+    [SerializeField] private float vaultEdgeYOffset = -0.24f;
+    [SerializeField] private float vaultEdgeDistance = 0.6f;
     private bool vaultableObjectClose;
     private Vector2 vaultpos;
     private RaycastHit2D vaultCheck;
+    public RaycastHit2D VaultCheck => vaultCheck;
+    [Header("Other Stuff")]
 
     
-    
-    
-    
-   
-    
-    [Header("Other Stuff")] 
-    
+
     private WalkingState playerState;
     private WallState playerWallState;
 
@@ -359,7 +379,7 @@ public class Movement : MonoBehaviour
          */
         
         //I did the position.y - position.y just to understand when reading
-        Debug.Log($"Downwards Distance: {downwardsEdgeCheck.distance}| Depois de: {(transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y + downwardsEdgeYOffset)- transform.position.y}");
+       // Debug.Log($"Downwards Distance: {downwardsEdgeCheck.distance}| Depois de: {(transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y + downwardsEdgeYOffset)- transform.position.y}");
         if (downwardsEdgeCheck && vaultCheck && downwardsEdgeCheck.distance >  (transform.position.y + (transform.GetComponent<BoxCollider2D>().size.y) * transform.localScale.y + downwardsEdgeYOffset)- transform.position.y)
         {
             vaultableObjectClose = true;
@@ -385,6 +405,11 @@ public class Movement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Makes the character move on the X axis, with the walking speed or running speed
+    /// </summary>
+    /// <param name="horizontal"></param> Variable responsible for the input
+    /// <param name="running"></param> Variable responsible for the state of movement
     public void Move(float horizontal, bool running =false)
     {
         if (!isHanging)
@@ -422,6 +447,7 @@ public class Movement : MonoBehaviour
                 if (Mathf.Abs(maxWalkingVelocity2D.x) >= Mathf.Abs(rb2d.velocity.x + horizontal * ((stepWalkingSpeed * aircontrol))))
                 {
                     rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * (stepWalkingSpeed * aircontrol), rb2d.velocity.y);
+                    //rb2d.velocity = new Vector2(rb2d.velocity.x + horizontal * ((running) ? stepRunningSpeed :  stepWalkingSpeed), rb2d.velocity.y);
                 }
             }
         }
