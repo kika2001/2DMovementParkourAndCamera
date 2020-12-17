@@ -435,9 +435,16 @@ public class Movement : MonoBehaviour
 
                 if (vaultableObjectClose && running && CompareNormalWithVector(vaultCheck.normal,((horizontal>0) ? Vector2.left : Vector2.right),0.3f) )
                 {
+                    /*
                     transform.position = new Vector3(
                         vaultpos.x + ((vaultpos.x - transform.position.x > 0) ? -(transform.GetComponent<BoxCollider2D>().size.x / 4) : +(transform.GetComponent<BoxCollider2D>().size.x / 4)),
                         vaultpos.y + transform.GetComponent<BoxCollider2D>().size.y / 1.8f,
+                        transform.position.z
+                    );
+                    */
+                    transform.position = new Vector3(
+                        vaultpos.x,
+                        vaultpos.y+ transform.GetComponent<BoxCollider2D>().size.y/2,
                         transform.position.z
                     );
                 }
